@@ -33,7 +33,28 @@ void allfft(std::string const& filename="tpcdecode_data_evb03_run11395_2_2024022
             TString outputfilename="allchanfft.root")
 {
   InputTag rawdigit_tag{ inputtag };
-  vector<string> filenames(1, filename);
+  vector<string> filenames;
+
+  filenames.push_back("tpcdecode_data_evb01_run10930_3_20240212T174037.root");
+  filenames.push_back("tpcdecode_data_evb01_run10931_49_20240212T185526.root");
+  filenames.push_back("tpcdecode_data_evb01_run11035_3_20240214T192232.root");
+  filenames.push_back("tpcdecode_data_evb01_run11186_46_20240220T144942.root");
+  filenames.push_back("tpcdecode_data_evb01_run11214_56_20240220T215847.root");
+  filenames.push_back("tpcdecode_data_evb01_run11239_3_20240221T200641.root");
+  filenames.push_back("tpcdecode_data_evb01_run11333_24_20240225T182536.root");
+  filenames.push_back("tpcdecode_data_evb02_run10959_8_20240213T152038.root");
+  filenames.push_back("tpcdecode_data_evb02_run11112_2_20240216T004821.root");
+  filenames.push_back("tpcdecode_data_evb02_run11266_57_20240222T202218.root");
+  filenames.push_back("tpcdecode_data_evb03_run11058_5_20240215T192031.root");
+  filenames.push_back("tpcdecode_data_evb03_run11141_57_20240217T020310.root");
+  filenames.push_back("tpcdecode_data_evb03_run11171_52_20240218T015927.root");
+  filenames.push_back("tpcdecode_data_evb03_run11174_64_20240219T020714.root");
+  filenames.push_back("tpcdecode_data_evb03_run11175_47_20240219T144903.root");
+  filenames.push_back("tpcdecode_data_evb03_run11306_11_20240223T194916.root");
+  filenames.push_back("tpcdecode_data_evb03_run11353_6_20240226T210932.root");
+  filenames.push_back("tpcdecode_data_evb03_run11395_2_20240227T194156.root");
+  filenames.push_back("tpcdecode_data_evb03_run11421_19_20240228T182245.root");
+
 
   std::map<size_t,TProfile*> profmap;
 
@@ -76,7 +97,8 @@ void allfft(std::string const& filename="tpcdecode_data_evb03_run11395_2_2024022
             //cout << x[0] << " " << x[1] << " " << x[2] << endl;
             fftr2c->SetPoints(x);
             fftr2c->Transform();
-            for (size_t i=0;i<nticks/2;++i)
+	    // skip the first bin as it has the pedestal
+            for (size_t i=1;i<nticks/2;++i)
               {
                 fftr2c->GetPointComplex(i, re, im);
                 mag = TMath::Sqrt(re*re + im*im);
