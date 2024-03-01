@@ -81,7 +81,7 @@ void allfft(std::string const& filename="tpcdecode_data_evb03_run11395_2_2024022
                 fftr2c->GetPointComplex(i, re, im);
                 mag = TMath::Sqrt(re*re + im*im);
                 // cout << mag << endl;
-                cf1dt->Fill(i*sf,mag); 
+                cf1dt->Fill((i+0.5)*sf,mag); 
               }
           }
         //cout << "Finished fft'ing channels" << endl;
