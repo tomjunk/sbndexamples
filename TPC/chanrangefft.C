@@ -105,9 +105,18 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
 
   for (const auto &filename : filenames)
     {
+      // get the run number
+      
       size_t rp = filename.find("run");
       size_t next_ = filename.find("_",rp);
       string rnst = filename.substr(rp + 3, next_ - rp -3);
+
+      // get the time string
+      
+      size_t rt = filename.find("_",next_ + 1);
+      next_ = filename.find(".root",rt);
+      string tstring = filename.substr(rt+1,next_ - rt - 1);
+      
       int irun = stoi(rnst);
       for (size_t i=0; i<clow.size(); ++i)
 	{
@@ -119,6 +128,9 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
 	  htitle += irun;
 	  htitle += " ";
 	  htitle += rangetitle.at(i);
+	  htitle += " ";
+	  htitle += tstring;
+          htitle += ";Frequency [MHz];FFT";
           TProfile* ffthist = (TProfile*) new TProfile(hid,htitle,nticks/2,0,digifreq/2.0);
           ffthist->SetDirectory(0);
 	  profhistos.push_back(ffthist);
