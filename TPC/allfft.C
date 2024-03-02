@@ -18,15 +18,14 @@ using namespace art;
 using namespace std;
 
 // gallery script to make an FFT plot for every channel in SBND
+// input file names now listed in code.
 
-// arguments:  filename -- input file, larsoft formatted
-// ievcount:  which event to display the FFT for.  This is the tree index in the file and not the event number
+// arguments
 // tickmin, tickmax -- to truncate the part of the event to run the FFT on.  Set to big and small numbers for no truncation.
 // digifreq:  ADC Sampling frequency in MHz.  Used to label plots.  It's 2 MHz for 35t, DUNE FD MC, and 2.5 MHz for 3x1x1
 // inputtag: use "tpcrawdecoder:daq" for input
 
-void allfft(std::string const& filename="tpcdecode_data_evb03_run11395_2_20240227T194156.root",  
-            size_t tickmin=0,
+void allfft(size_t tickmin=0,
             size_t tickmax=3413,  // we have an odd number of ticks, 3415; take only the first 3414 
             std::string const& inputtag="daq", 
             double digifreq=2.0,
