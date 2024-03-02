@@ -185,7 +185,8 @@ void chanrangefftfile(string filename,
         for (size_t ichan=0;ichan<nrawdigits;++ichan)
           {
             int ic = rawdigits[ichan].Channel(); 
-	    if (ic < chanmin || ic > chanmax) continue; 
+	    if (ic < chanmin || ic > chanmax) continue;
+	    if (rawdigits[ichan].GetSigma() > 10) continue;
 	    
             for (size_t itick=tlow; itick <= thigh; ++itick) x[itick-tlow] = rawdigits[ichan].ADC(itick); 
             //cout << x[0] << " " << x[1] << " " << x[2] << endl;
