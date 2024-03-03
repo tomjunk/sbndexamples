@@ -46,24 +46,29 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
   vector<TProfile*> profhistos;
   
   vector<string> filenames;
+
+  filenames.push_back("tpcdecode_data_evb01_run10930_3_20240212T174037.root");
   filenames.push_back("tpcdecode_data_evb01_run10931_49_20240212T185526.root");
-  filenames.push_back("tpcdecode_data_evb01_run11035_3_20240214T192232.root");
-  filenames.push_back("tpcdecode_data_evb01_run11186_46_20240220T144942.root");
-  filenames.push_back("tpcdecode_data_evb01_run11214_56_20240220T215847.root");
-  filenames.push_back("tpcdecode_data_evb01_run11239_3_20240221T200641.root");
-  filenames.push_back("tpcdecode_data_evb01_run11333_24_20240225T182536.root");
   filenames.push_back("tpcdecode_data_evb02_run10959_8_20240213T152038.root");
-  filenames.push_back("tpcdecode_data_evb02_run11112_2_20240216T004821.root");
-  filenames.push_back("tpcdecode_data_evb02_run11266_57_20240222T202218.root");
+  filenames.push_back("tpcdecode_data_evb01_run11035_3_20240214T192232.root");
   filenames.push_back("tpcdecode_data_evb03_run11058_5_20240215T192031.root");
+  filenames.push_back("tpcdecode_data_evb02_run11112_2_20240216T004821.root");
   filenames.push_back("tpcdecode_data_evb03_run11141_57_20240217T020310.root");
   filenames.push_back("tpcdecode_data_evb03_run11171_52_20240218T015927.root");
   filenames.push_back("tpcdecode_data_evb03_run11174_64_20240219T020714.root");
   filenames.push_back("tpcdecode_data_evb03_run11175_47_20240219T144903.root");
+  filenames.push_back("tpcdecode_data_evb01_run11186_46_20240220T144942.root");
+  filenames.push_back("tpcdecode_data_evb01_run11214_56_20240220T215847.root");
+  filenames.push_back("tpcdecode_data_evb01_run11239_3_20240221T200641.root");
+  filenames.push_back("tpcdecode_data_evb02_run11266_57_20240222T202218.root");
   filenames.push_back("tpcdecode_data_evb03_run11306_11_20240223T194916.root");
+  filenames.push_back("tpcdecode_data_evb01_run11333_24_20240225T182536.root");
   filenames.push_back("tpcdecode_data_evb03_run11353_6_20240226T210932.root");
   filenames.push_back("tpcdecode_data_evb03_run11395_2_20240227T194156.root");
   filenames.push_back("tpcdecode_data_evb03_run11421_19_20240228T182245.root");
+  filenames.push_back("tpcdecode_data_evb01_run11436_23_20240229T182620.root");
+  filenames.push_back("tpcdecode_data_evb03_run11469_8_20240301T181152.root");
+  filenames.push_back("tpcdecode_data_evb01_run11489_12_20240302T180740.root");
 
   // ranges, names and titles
   vector<int> clow;
