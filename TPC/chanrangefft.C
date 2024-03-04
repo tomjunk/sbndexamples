@@ -69,7 +69,8 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
   filenames.push_back("tpcdecode_data_evb01_run11436_23_20240229T182620.root");
   filenames.push_back("tpcdecode_data_evb03_run11469_8_20240301T181152.root");
   filenames.push_back("tpcdecode_data_evb01_run11489_12_20240302T180740.root");
-
+  filenames.push_back("tpcdecode_data_evb02_run11494_8_20240303T180925.root");
+  
   // ranges, names and titles
   vector<int> clow;
   vector<int> chigh;
