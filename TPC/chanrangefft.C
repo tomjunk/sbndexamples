@@ -70,6 +70,7 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
   filenames.push_back("tpcdecode_data_evb03_run11469_8_20240301T181152.root");
   filenames.push_back("tpcdecode_data_evb01_run11489_12_20240302T180740.root");
   filenames.push_back("tpcdecode_data_evb02_run11494_8_20240303T180925.root");
+  filenames.push_back("tpcdecode_data_evb03_run11505_24_20240304T182922.root");
   filenames.push_back("tpcdecode_data_evb02_run11507_3_20240304T191631.root");
   
   // ranges, names and titles
