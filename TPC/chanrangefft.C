@@ -24,14 +24,14 @@ using namespace std;
 // digifreq:  ADC Sampling frequency in MHz.  Used to label plots.  It's 2 MHz for 35t, DUNE FD MC, and 2.5 MHz for 3x1x1
 // inputtag: use "tpcrawdecoder:daq" for input
 
-void chanrangefftfile(string filename="tpcdecode_data_evb03_run11395_2_20240227T194156.root",
-                      TProfile *ffthist=0,
-		      int chanmin=0,
-		      int chanmax=1983,
-                      size_t tickmin=0,
-                      size_t tickmax=3413,
-                      std::string const& inputtag="daq", 
-                      double digifreq=2.0);
+void chanrangefftfile(string filename,
+                      std::vector<TProfile *> &ffthist,
+		      std::vector<int> &chanmin,
+		      std::vector<int> &chanmax,
+                      size_t tickmin,
+                      size_t tickmax,
+                      std::string const& inputtag,
+                      double digifreq);
 
 
 // main method of this script
@@ -40,7 +40,7 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
 		  size_t tickmin=0,
 		  size_t tickmax=3413,   // we have an odd number of ticks, 3415; take only the first 3414
                   double digifreq=2.0
-		 )
+		  )
 {
 
   vector<TProfile*> profhistos;
@@ -70,6 +70,7 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
   filenames.push_back("tpcdecode_data_evb03_run11469_8_20240301T181152.root");
   filenames.push_back("tpcdecode_data_evb01_run11489_12_20240302T180740.root");
   filenames.push_back("tpcdecode_data_evb02_run11494_8_20240303T180925.root");
+  filenames.push_back("tpcdecode_data_evb02_run11507_3_20240304T191631.root");
   
   // ranges, names and titles
   vector<int> clow;
@@ -124,6 +125,7 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
       string tstring = filename.substr(rt+1,next_ - rt - 1);
       
       int irun = stoi(rnst);
+      std::vector<TProfile*> ffthistvec;
       for (size_t i=0; i<clow.size(); ++i)
 	{
           TString hid="fft_";
@@ -137,11 +139,11 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
 	  htitle += " ";
 	  htitle += tstring;
           htitle += ";Frequency [MHz];FFT";
-          TProfile* ffthist = (TProfile*) new TProfile(hid,htitle,nticks/2,0,digifreq/2.0);
-          ffthist->SetDirectory(0);
-	  profhistos.push_back(ffthist);
-	  chanrangefftfile(filename,ffthist,clow.at(i),chigh.at(i),tickmin,tickmax);
+          ffthistvec.push_back((TProfile*) new TProfile(hid,htitle,nticks/2,0,digifreq/2.0));
+          ffthistvec.back()->SetDirectory(0);
+	  profhistos.push_back(ffthistvec.back());
 	}
+      chanrangefftfile(filename,ffthistvec,clow,chigh,tickmin,tickmax,"daq",digifreq);
     }
 
   TFile outputfile(outputfilename,"RECREATE");
@@ -157,9 +159,9 @@ void chanrangefft(TString outputfilename="fftrangetimedep.root",
 
 // process one file
 void chanrangefftfile(string filename,
-                      TProfile *ffthist,
-		      int chanmin,
-		      int chanmax,
+                      std::vector<TProfile *> &ffthist,
+		      std::vector<int> &chanmin,
+		      std::vector<int> &chanmax,
                       size_t tickmin,
                       size_t tickmax, 
                       std::string const& inputtag, 
@@ -191,23 +193,35 @@ void chanrangefftfile(string filename,
         for (size_t ichan=0;ichan<nrawdigits;++ichan)
           {
             int ic = rawdigits[ichan].Channel(); 
-	    if (ic < chanmin || ic > chanmax) continue;
+	    bool found=false;
+	    for (size_t irange=0; irange<chanmin.size(); ++irange)
+	      {
+		found |= (ic>=chanmin.at(irange) && ic<=chanmax.at(irange));
+	      }
+	    if (!found) continue;
 	    if (rawdigits[ichan].GetSigma() > 10) continue;
 	    
             for (size_t itick=tlow; itick <= thigh; ++itick) x[itick-tlow] = rawdigits[ichan].ADC(itick); 
             //cout << x[0] << " " << x[1] << " " << x[2] << endl;
             fftr2c->SetPoints(x);
             fftr2c->Transform();
-	    // skip the first bin as it has the pedestal
-            for (size_t i=1;i<nticks/2;++i)
-              {
-                fftr2c->GetPointComplex(i, re, im);
-                mag = TMath::Sqrt(re*re + im*im);
-                // cout << mag << endl;
-                ffthist->Fill((i+0.5)*sf,mag); 
-              }
-          }
-        //cout << "Finished fft'ing channels" << endl;
+
+	    for (size_t irange=0; irange<chanmin.size(); ++irange)
+	      {
+		if (ic>=chanmin.at(irange) && ic<=chanmax.at(irange))
+		  {
+		    // skip the first bin as it has the pedestal
+		    for (size_t i=1;i<nticks/2;++i)
+		      {
+			fftr2c->GetPointComplex(i, re, im);
+			mag = TMath::Sqrt(re*re + im*im);
+			// cout << mag << endl;
+			ffthist.at(irange)->Fill((i+0.5)*sf,mag); 
+		      }
+		  }
+	      }
+	  }
+	//cout << "Finished fft'ing channels" << endl;
       }  // end check if rawdigits are empty
   } // end loop over events
 }
