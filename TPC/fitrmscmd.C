@@ -2,13 +2,13 @@
 #include "TMath.h"
 
 {
-TH1F rmshist("rmshist","rmshist",100,1,6);
+TH1F rmshist("rmshist","rmshist",100,1,3);
 
-TH1F rmshistemptychans("rmshistemptychans","rmshistemptychans",100,1,6);
+TH1F rmshistemptychans("rmshistemptychans","rmshistemptychans",100,1,3);
 
-Events->Draw("raw::RawDigits_daq__TPCDECODER.obj.fSigma>>rmshist","raw::RawDigits_daq__TPCDECODER.obj.fPedestal<1000 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 10030 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 10833 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 5201 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 4398 && raw::RawDigits_daq__TPCDECODER.obj.fSigma<6");
+Events->Draw("raw::RawDigits_daq__TPCDECODER.obj.fSigma>>rmshist","raw::RawDigits_daq__TPCDECODER.obj.fPedestal<1000 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 10030 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 10833 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 5201 && raw::RawDigits_daq__TPCDECODER.obj.fChannel != 4398 && raw::RawDigits_daq__TPCDECODER.obj.fSigma<3");
 
-Events->Draw("raw::RawDigits_daq__TPCDECODER.obj.fSigma>>rmshistemptychans","raw::RawDigits_daq__TPCDECODER.obj.fPedestal<1000 && (raw::RawDigits_daq__TPCDECODER.obj.fChannel == 10030 || raw::RawDigits_daq__TPCDECODER.obj.fChannel == 10833 || raw::RawDigits_daq__TPCDECODER.obj.fChannel == 5201 || raw::RawDigits_daq__TPCDECODER.obj.fChannel == 4398) && raw::RawDigits_daq__TPCDECODER.obj.fSigma<6");
+Events->Draw("raw::RawDigits_daq__TPCDECODER.obj.fSigma>>rmshistemptychans","raw::RawDigits_daq__TPCDECODER.obj.fPedestal<1000 && (raw::RawDigits_daq__TPCDECODER.obj.fChannel == 10030 || raw::RawDigits_daq__TPCDECODER.obj.fChannel == 10833 || raw::RawDigits_daq__TPCDECODER.obj.fChannel == 5201 || raw::RawDigits_daq__TPCDECODER.obj.fChannel == 4398) && raw::RawDigits_daq__TPCDECODER.obj.fSigma<3");
 
  double crms = rmshist.GetMean();
  double dcrms = rmshist.GetRMS();
