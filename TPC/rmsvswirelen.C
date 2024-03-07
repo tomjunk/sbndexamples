@@ -338,11 +338,6 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   rgraph->Draw("AP");
   rcanvas->Print("rmsvswirelen.png");
 
-  rgraphcnr->SetMinimum(0);
-  rgraphcnr->SetMaximum(4);
-  rgraphcnr->Draw("AP");
-  rcanvas->Print("rmsvswirelen_cnr.png");
-  
   rgraphq->SetMinimum(0);
   rgraphq->SetMaximum(4);
   rgraphq->Draw("AP");
@@ -381,19 +376,19 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   yrms->SetLineColor(1);
   yrmscnr->SetLineColor(2);
   yrmscnr->Draw("hist");
-  yrms->Draw("hist,same");
+  yrms->Draw("hist,SAMES");
   rcanvas->Print("yrmscnr.png");
 
   urms->SetLineColor(1);
   urmscnr->SetLineColor(2);
   urmscnr->Draw("hist");
-  urms->Draw("hist,same");
+  urms->Draw("hist,SAMES");
   rcanvas->Print("urmscnr.png");
 
   vrms->SetLineColor(1);
   vrmscnr->SetLineColor(2);
   vrmscnr->Draw("hist");
-  vrms->Draw("hist,same");
+  vrms->Draw("hist,SAMES");
   rcanvas->Print("vrmscnr.png");
 
   yadcminusmed->Draw("hist");
@@ -402,6 +397,38 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   rcanvas->Print("uadcminusmed.png");
   vadcminusmed->Draw("hist");
   rcanvas->Print("vadcminusmed.png");
+
+  rgraphecnr->SetMinimum(0);
+  rgraphecnr->SetMaximum(4);
+  rgraphecnr->Draw("AP");
+  rcanvas->Print("rmsvswireleneast_cnr.png");
+
+  rgrapheucnr->SetMinimum(0);
+  rgrapheucnr->SetMaximum(4);
+  rgrapheucnr->Draw("AP");
+  rcanvas->Print("rmsvswireleneastU_cnr.png");
+
+  rgraphevcnr->SetMinimum(0);
+  rgraphevcnr->SetMaximum(4);
+  rgraphevcnr->Draw("AP");
+  rcanvas->Print("rmsvswireleneastV_cnr.png");
+  
+  rgraphwcnr->SetMinimum(0);
+  rgraphwcnr->SetMaximum(4);
+  rgraphwcnr->Draw("AP");
+  rcanvas->Print("rmsvswirelenwest_cnr.png");
+
+  rgraphwucnr->SetMinimum(0);
+  rgraphwucnr->SetMaximum(4);
+  rgraphwucnr->Draw("AP");
+  rcanvas->Print("rmsvswirelenwestU_cnr.png");
+
+  rgraphwvcnr->SetMinimum(0);
+  rgraphwvcnr->SetMaximum(4);
+  rgraphwvcnr->Draw("AP");
+  rcanvas->Print("rmsvswirelenwestV_cnr.png");
+  
+
 }
 
 void readgeomfile(TString filename)
