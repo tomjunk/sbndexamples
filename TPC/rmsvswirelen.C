@@ -26,6 +26,7 @@
 #include "Riostream.h"
 #include "TROOT.h"
 #include "TH1F.h"
+#include "TH1D.h"
 
 // too lazy to encapsulate these global variables
 
@@ -120,15 +121,15 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   TGraph *rgraphwvcnr = (TGraph*) new TGraph();
 
   TH1F *yrms = (TH1F*) new TH1F("yrms","Y Wire RMS",100,1,4);
-  TH1F *yrmscnr = (TH1F*) new TH1F("cnryrms","CNR Y Wire RMS",100,1,4);
+  TH1F *yrmscnr = (TH1F*) new TH1F("cnryrms","CNR Y Wire RMS",100,0,4);
   TH1F *urms = (TH1F*) new TH1F("urms","U Wire RMS",100,1,4);
-  TH1F *urmscnr = (TH1F*) new TH1F("cnrurms","CNR U Wire RMS",100,1,4);
+  TH1F *urmscnr = (TH1F*) new TH1F("cnrurms","CNR U Wire RMS",100,0,4);
   TH1F *vrms = (TH1F*) new TH1F("vrms","V Wire RMS",100,1,4);
-  TH1F *vrmscnr = (TH1F*) new TH1F("cnrvrms","CNR V Wire RMS",100,1,4);
+  TH1F *vrmscnr = (TH1F*) new TH1F("cnrvrms","CNR V Wire RMS",100,0,4);
 
-  TH1F *yadcminusmed = (TH1F*) new TH1F("yadcminusmed","Y Wires;ADC-median",21,-10.5,10.5);
-  TH1F *uadcminusmed = (TH1F*) new TH1F("uadcminusmed","U Wires;ADC-median",21,-10.5,10.5);
-  TH1F *vadcminusmed = (TH1F*) new TH1F("vadcminusmed","V Wires;ADC-median",21,-10.5,10.5);
+  TH1D *yadcminusmed = (TH1D*) new TH1D("yadcminusmed","Y Wires;ADC-median",41,-20.5,20.5);
+  TH1D *uadcminusmed = (TH1D*) new TH1D("uadcminusmed","U Wires;ADC-median",41,-20.5,20.5);
+  TH1D *vadcminusmed = (TH1D*) new TH1D("vadcminusmed","V Wires;ADC-median",41,-20.5,20.5);
   
   TCanvas *rcanvas = (TCanvas*) new TCanvas("c1","",1500,1100);
   rgraph->SetTitle("Wire Noise vs. Wire Length;Wire Length [cm];RMS [ADC counts]");
@@ -212,7 +213,7 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 		    auto ci = GetChanInfoFromOfflChan(ic);
 		    int fembident = 100*ci.WIBCrate + 10*ci.WIB + ci.FEMBOnWIB;
 		    // to do -- remove ROIs with signals
-		    adcvmap[fembident][ci.plane].push_back(rawdigits[ichan].ADC(itick));
+		    adcvmap[fembident][ci.plane].push_back(rawdigits[ichan].ADC(itick) - rawdigits[ichan].GetPedestal());
 		  }
 		for (const auto& fp : adcvmap)  // loop over FEMBs
 		  {
@@ -275,7 +276,7 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 		std::vector<int> adcsub;
 		for (size_t itick=0; itick<nticks; ++itick)
 		  {
-		    adcsub.push_back(rawdigits[ichan].ADC(itick) - medianmap[fembident][iplane][itick]);
+		    adcsub.push_back(rawdigits[ichan].ADC(itick) - rawdigits[ichan].GetPedestal() - medianmap[fembident][iplane][itick]);
 		    if (iplane == 0)
 		      {
 			uadcminusmed->Fill(adcsub.back());
