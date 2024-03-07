@@ -120,11 +120,11 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   TGraph *rgraphevcnr = (TGraph*) new TGraph();
   TGraph *rgraphwvcnr = (TGraph*) new TGraph();
 
-  TH1F *yrms = (TH1F*) new TH1F("yrms","Y Wire RMS",100,1,4);
+  TH1F *yrms = (TH1F*) new TH1F("yrms","Y Wire RMS",100,0,4);
   TH1F *yrmscnr = (TH1F*) new TH1F("cnryrms","CNR Y Wire RMS",100,0,4);
-  TH1F *urms = (TH1F*) new TH1F("urms","U Wire RMS",100,1,4);
+  TH1F *urms = (TH1F*) new TH1F("urms","U Wire RMS",100,0,4);
   TH1F *urmscnr = (TH1F*) new TH1F("cnrurms","CNR U Wire RMS",100,0,4);
-  TH1F *vrms = (TH1F*) new TH1F("vrms","V Wire RMS",100,1,4);
+  TH1F *vrms = (TH1F*) new TH1F("vrms","V Wire RMS",100,0,4);
   TH1F *vrmscnr = (TH1F*) new TH1F("cnrvrms","CNR V Wire RMS",100,0,4);
 
   TH1D *yadcminusmed = (TH1D*) new TH1D("yadcminusmed","Y Wires;ADC-median",41,-20.5,20.5);
@@ -380,20 +380,20 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 
   yrms->SetLineColor(1);
   yrmscnr->SetLineColor(2);
-  yrms->Draw("hist");
-  yrmscnr->Draw("hist,same");
+  yrmscnr->Draw("hist");
+  yrms->Draw("hist,same");
   rcanvas->Print("yrmscnr.png");
 
   urms->SetLineColor(1);
   urmscnr->SetLineColor(2);
-  urms->Draw("hist");
-  urmscnr->Draw("hist,same");
+  urmscnr->Draw("hist");
+  urms->Draw("hist,same");
   rcanvas->Print("urmscnr.png");
 
   vrms->SetLineColor(1);
   vrmscnr->SetLineColor(2);
-  vrms->Draw("hist");
-  vrmscnr->Draw("hist,same");
+  vrmscnr->Draw("hist");
+  vrms->Draw("hist,same");
   rcanvas->Print("vrmscnr.png");
 
   yadcminusmed->Draw("hist");
