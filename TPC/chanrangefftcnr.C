@@ -28,6 +28,7 @@
 #include "TH1F.h"
 #include "TH1D.h"
 #include "TProfile.h"
+#include "TVirtualFFT.h"
 
 // too lazy to encapsulate these global variables
 
@@ -103,10 +104,27 @@ void chanrangefftcnr(std::string filename="tpcdecode_data_evb03_run11505_24_2024
   TProfile *wvfftcnr = (TProfile*) new TProfile("wvfftcnr","CNR West V Channels;Frequency [MHz];FFT",ntickseven/2,0,digifreq/2.0);
   TProfile *wyfftcnr = (TProfile*) new TProfile("wyfftcnr","CNR West Y Channels;Frequency [MHz];FFT",ntickseven/2,0,digifreq/2.0);
 
+  TH1F *eurms = (TH1F*) new TH1F("eurms","East U Channels;RMS",100,0.,4.);
+  TH1F *evrms = (TH1F*) new TH1F("evrms","East V Channels;RMS",100,0.,4.);
+  TH1F *eyrms = (TH1F*) new TH1F("eyrms","East Y Channels;RMS",100,0.,4.);
+  TH1F *wurms = (TH1F*) new TH1F("wurms","West U Channels;RMS",100,0.,4.);
+  TH1F *wvrms = (TH1F*) new TH1F("wvrms","West V Channels;RMS",100,0.,4.);
+  TH1F *wyrms = (TH1F*) new TH1F("wyrms","West Y Channels;RMS",100,0.,4.);
+
+  TH1F *eurmscnr = (TH1F*) new TH1F("eurmscnr","CNR East U Channels;RMS",100,0.,4.);
+  TH1F *evrmscnr = (TH1F*) new TH1F("evrmscnr","CNR East V Channels;RMS",100,0.,4.);
+  TH1F *eyrmscnr = (TH1F*) new TH1F("eyrmscnr","CNR East Y Channels;RMS",100,0.,4.);
+  TH1F *wurmscnr = (TH1F*) new TH1F("wurmscnr","CNR West U Channels;RMS",100,0.,4.);
+  TH1F *wvrmscnr = (TH1F*) new TH1F("wvrmscnr","CNR West V Channels;RMS",100,0.,4.);
+  TH1F *wyrmscnr = (TH1F*) new TH1F("wyrmscnr","CNR West Y Channels;RMS",100,0.,4.);
+
+  int ievent = 0;
+  
   for (gallery::Event ev(filenames); !ev.atEnd(); ev.next()) {
     auto const& rawdigits = *ev.getValidHandle<vector<raw::RawDigit>>(rawdigit_tag);
     if (!rawdigits.empty())
       {
+	ievent++;
 	const size_t nrawdigits = rawdigits.size();
 
 	// make a big map of median ADC values for each plane and FEMB for each tick.
@@ -157,66 +175,101 @@ void chanrangefftcnr(std::string filename="tpcdecode_data_evb03_run11505_24_2024
 	    auto ci = GetChanInfoFromOfflChan(ic);
 	    int fembident = 100*ci.WIBCrate + 10*ci.WIB + ci.FEMBOnWIB;  // must match definition above
 	    int iplane = ci.plane;
-	    std::vector<double> adcsub;
-	    std::vector<double> adcnonsub;
+	    std::vector<int> adcsub;
+	    std::vector<int> adcnonsub;
+	    std::vector<double> adcsubdouble;
+	    std::vector<double> adcnonsubdouble;
+	    
 	    for (size_t itick=0; itick<nticks; ++itick)
 	      {
 		adcnonsub.push_back(rawdigits[ichan].ADC(itick) - rawdigits[ichan].GetPedestal());
 		adcsub.push_back(adcnonsub.back() - medianmap[fembident][iplane][itick]);
+		if (debuglevel > 1)
+		  {
+		    if (ievent == 1 && ic == 1000)
+		      {
+			cout << "debug chan 1000: " << itick << " " << adcnonsub.back() << " " << adcsub.back() << " " << medianmap[fembident][iplane][itick] << endl;
+		      }
+		  }
+		adcsubdouble.push_back(adcsub.back());
+		adcnonsubdouble.push_back(adcnonsub.back());
 	      }
 	    
 	    TProfile *unsubprof = 0;
 	    TProfile *subprof = 0;
+
+	    TH1F *unsubrms = 0;
+	    TH1F *subrms = 0;
 	    
 	    if (ic<1984)
 	      {
 		unsubprof = eufft;
 		subprof = eufftcnr;
+		unsubrms = eurms;
+		subrms = eurmscnr;
 	      }
 	    else if (ic < 3968)
 	      {
 		unsubprof = evfft;
 		subprof = evfftcnr;
+		unsubrms = evrms;
+		subrms = evrmscnr;
 	      }
 	    else if (ic < 5632)
 	      {
 		unsubprof = eyfft;
 		subprof = eyfftcnr;
+		unsubrms = eyrms;
+		subrms = eyrmscnr;
 	      }
 	    else if (ic < 7616)
 	      {
 		unsubprof = wufft;
 		subprof = wufftcnr;
+		unsubrms = wurms;
+		subrms = wurmscnr;
 	      }
 	    else if (ic < 9600)
 	      {
 		unsubprof = wvfft;
 		subprof = wvfftcnr;
+		unsubrms = wvrms;
+		subrms = wvrmscnr;
 	      }
 	    else
 	      {
 		unsubprof = wyfft;
 		subprof = wyfftcnr;
+		unsubrms = wyrms;
+		subrms = wyrmscnr;
 	      }
 
-	    fftr2c->SetPoints(adcnonsub.data());
+            double rmsval = TMath::RMS(adcnonsub.size(),adcnonsub.data());
+	    unsubrms->Fill(rmsval);
+
+	    fftr2c->SetPoints(adcnonsubdouble.data());
 	    fftr2c->Transform();
-	    for (int i=0; i<ntickseven/2; ++i)
+	    for (int i=1; i<ntickseven/2; ++i)
 	      {
 		fftr2c->GetPointComplex(i, re, im);
 		mag = TMath::Sqrt(re*re + im*im);
-			// cout << mag << endl;
+		// cout << mag << endl;
 		unsubprof->Fill((i+0.5)*sf,mag); 
 	      }
-	    fftr2c->SetPoints(adcsub.data());
+	    
+            rmsval = TMath::RMS(adcsub.size(),adcsub.data());
+	    subrms->Fill(rmsval);
+
+	    fftr2c->SetPoints(adcsubdouble.data());
 	    fftr2c->Transform();
-	    for (int i=0; i<ntickseven/2; ++i)
+	    for (int i=1; i<ntickseven/2; ++i)
 	      {
 		fftr2c->GetPointComplex(i, re, im);
 		mag = TMath::Sqrt(re*re + im*im);
-			// cout << mag << endl;
+		// cout << mag << endl;
 		subprof->Fill((i+0.5)*sf,mag); 
 	      }
+
 	  } // end loop over channels
       }  // end check for empty raw digits
   } // end loop over events
@@ -235,6 +288,19 @@ void chanrangefftcnr(std::string filename="tpcdecode_data_evb03_run11505_24_2024
   wvfftcnr->Write();
   wyfft->Write();
   wyfftcnr->Write();
+
+  eurms->Write();
+  eurmscnr->Write();
+  evrms->Write();
+  evrmscnr->Write();
+  eyrms->Write();
+  eyrmscnr->Write();
+  wurms->Write();
+  wurmscnr->Write();
+  wvrms->Write();
+  wvrmscnr->Write();
+  wyrms->Write();
+  wyrmscnr->Write();
   std::cout << "closing output file" << std::endl;
 }
 

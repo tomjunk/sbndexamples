@@ -73,4 +73,73 @@ void plotfftcnr(TString infilename="fftcnr.root")
   h2->Draw("hist,same");
   
   c1->Print("fftcnrcompare.pdf");
+
+  c1->cd(1);
+  h1 = (TProfile*) infile.Get("eurms");
+  h2 = (TProfile*) infile.Get("eurmscnr");
+  h1->SetLineColor(1);
+  h2->SetLineColor(2);
+  h1->SetStats(false);
+  h2->SetStats(false);
+  h2->Draw("hist");
+  h1->Draw("hist,same");
+  h2->Draw("hist,same");
+
+  c1->cd(2);
+  h1 = (TProfile*) infile.Get("evrms");
+  h2 = (TProfile*) infile.Get("evrmscnr");
+  h1->SetLineColor(1);
+  h2->SetLineColor(2);
+  h1->SetStats(false);
+  h2->SetStats(false);
+  h2->Draw("hist");
+  h1->Draw("hist,same");
+  h2->Draw("hist,same");
+
+  c1->cd(3);
+  h1 = (TProfile*) infile.Get("eyrms");
+  h2 = (TProfile*) infile.Get("eyrmscnr");
+  h1->SetLineColor(1);
+  h2->SetLineColor(2);
+  h1->SetStats(false);
+  h2->SetStats(false);
+  h2->Draw("hist");
+  h1->Draw("hist,same");
+  h2->Draw("hist,same");
+
+  c1->cd(4);
+  h1 = (TProfile*) infile.Get("wurms");
+  h2 = (TProfile*) infile.Get("wurmscnr");
+  h1->SetLineColor(1);
+  h2->SetLineColor(2);
+  h1->SetStats(false);
+  h2->SetStats(false);
+  h2->Draw("hist");
+  h1->Draw("hist,same");
+  h2->Draw("hist,same");
+
+  c1->cd(5);
+  h1 = (TProfile*) infile.Get("wvrms");
+  h2 = (TProfile*) infile.Get("wvrmscnr");
+  h1->SetLineColor(1);
+  h2->SetLineColor(2);
+  h1->SetStats(false);
+  h2->SetStats(false);
+  h2->Draw("hist");
+  h1->Draw("hist,same");
+  h2->Draw("hist,same");
+
+  c1->cd(6);
+  h1 = (TProfile*) infile.Get("wyrms");
+  h2 = (TProfile*) infile.Get("wyrmscnr");
+  h1->SetLineColor(1);
+  h2->SetLineColor(2);
+  h1->SetStats(false);
+  h2->SetStats(false);
+  h2->Draw("hist");
+  h1->Draw("hist,same");
+  h2->Draw("hist,same");
+
+  c1->Print("rmscnrcompare.pdf");
+  
 }

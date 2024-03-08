@@ -82,8 +82,8 @@ std::unordered_map<unsigned int, ChanInfo_t> fChanInfoFromOfflChan;
 // look up channel info by FEMCrate, FEM, and FEMCh
   
 std::unordered_map<unsigned int,
-  std::unordered_map<unsigned int,
-  std::unordered_map< unsigned int, ChanInfo_t > > > fChanInfoFromFEMInfo;
+		   std::unordered_map<unsigned int,
+				      std::unordered_map< unsigned int, ChanInfo_t > > > fChanInfoFromFEMInfo;
 
 void readchanmapfile();
 
@@ -169,10 +169,12 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   InputTag rawdigit_tag{ "daq" };
   vector<string> filenames(1, filename);
 
+  int ievent = 0;
   for (gallery::Event ev(filenames); !ev.atEnd(); ev.next()) {
     auto const& rawdigits = *ev.getValidHandle<vector<raw::RawDigit>>(rawdigit_tag);
     if (!rawdigits.empty())
       {
+	ievent++;
 	const size_t nrawdigits = rawdigits.size();
 
 	// compute average noise on disconnected channels
@@ -296,6 +298,14 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 		for (size_t itick=0; itick<nticks; ++itick)
 		  {
 		    adcsub.push_back(rawdigits[ichan].ADC(itick) - rawdigits[ichan].GetPedestal() - medianmap[fembident][iplane][itick]);
+		    if (debuglevel > 1)
+		      {
+			if (ievent == 1 && ic == 1000)
+			  {
+			    cout << "debug chan 1000: " << itick << " " << adcsub.back() << " " << medianmap[fembident][iplane][itick] << endl;
+			  }
+		      }
+
 		    if (iplane == 0)
 		      {
 			uadcminusmed->Fill(adcsub.back());
