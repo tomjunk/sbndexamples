@@ -27,6 +27,7 @@
 #include "TROOT.h"
 #include "TH1F.h"
 #include "TH1D.h"
+#include "TPaveStats.h"
 
 // too lazy to encapsulate these global variables
 
@@ -120,6 +121,14 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   TGraph *rgraphevcnr = (TGraph*) new TGraph();
   TGraph *rgraphwvcnr = (TGraph*) new TGraph();
 
+  TGraph *qrgraphcnr = (TGraph*) new TGraph();
+  TGraph *qrgraphecnr = (TGraph*) new TGraph();
+  TGraph *qrgraphwcnr = (TGraph*) new TGraph();
+  TGraph *qrgrapheucnr = (TGraph*) new TGraph();
+  TGraph *qrgraphwucnr = (TGraph*) new TGraph();
+  TGraph *qrgraphevcnr = (TGraph*) new TGraph();
+  TGraph *qrgraphwvcnr = (TGraph*) new TGraph();
+  
   TH1F *yrms = (TH1F*) new TH1F("yrms","Y Wire RMS",100,0,4);
   TH1F *yrmscnr = (TH1F*) new TH1F("cnryrms","CNR Y Wire RMS",100,0,4);
   TH1F *urms = (TH1F*) new TH1F("urms","U Wire RMS",100,0,4);
@@ -149,6 +158,14 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   rgraphevcnr->SetTitle("CNR East V Noise vs. Wire Length;Wire Length [cm]; RMS [ADC counts]");
   rgraphwvcnr->SetTitle("CNR West V Noise vs. Wire Length;Wire Length [cm]; RMS [ADC counts]");
 
+  qrgraphcnr->SetTitle("Quad Diff CNR Noise vs. Wire Length;Wire Length [cm];Quad Diff RMS [ADC counts]");
+  qrgraphecnr->SetTitle("Quad Diff CNR East Noise vs. Wire Length;Wire Length [cm];Quad Diff RMS [ADC counts]");
+  qrgraphwcnr->SetTitle("Quad Diff CNR West Noise vs. Wire Length;Wire Length [cm];Quad Diff RMS [ADC counts]");
+  qrgrapheucnr->SetTitle("Quad Diff CNR East U Noise vs. Wire Length;Wire Length [cm];Quad Diff RMS [ADC counts]");
+  qrgraphwucnr->SetTitle("Quad DiffCNR West U Noise vs. Wire Length;Wire Length [cm];Quad Diff RMS [ADC counts]");
+  qrgraphevcnr->SetTitle("Quad Diff CNR East V Noise vs. Wire Length;Wire Length [cm];Quad Diff RMS [ADC counts]");
+  qrgraphwvcnr->SetTitle("Quad Diff CNR West V Noise vs. Wire Length;Wire Length [cm];Quad Diff RMS [ADC counts]");
+  
   InputTag rawdigit_tag{ "daq" };
   vector<string> filenames(1, filename);
 
@@ -267,6 +284,8 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 
 	if (cnr)
 	  {
+	    unordered_map<unsigned int, double> rmsvalmap;
+	    
 	    for (size_t ichan=0;ichan<nrawdigits; ++ichan) 
 	      { 
 		unsigned int ic = rawdigits[ichan].Channel();
@@ -291,6 +310,16 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 		      }
 		  }
 		double rmsval = TMath::RMS(adcsub.size(),adcsub.data());
+		rmsvalmap[ic] = rmsval;
+	      }
+	    double avgdisconrms = (rmsvalmap[10030] + rmsvalmap[10833] + rmsvalmap[5201] + rmsvalmap[4398])/4.0;
+	    
+	    for (size_t ichan=0;ichan<nrawdigits; ++ichan) 
+	      { 	    
+		unsigned int ic = rawdigits[ichan].Channel();
+		double rmsval = rmsvalmap[ic];
+		double qsubrmsval = TMath::Sqrt(TMath::Max(0.0,rmsval*rmsval - avgdisconrms*avgdisconrms));
+		
 	        if ( (ic>=3968 && ic<5632) || (ic>=9600))
 	          {
 		    yrmscnr->Fill(rmsval);
@@ -305,15 +334,20 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 		  }
 
 	        double wirelen = calcwirelen(ic);
+		
 		rgraphcnr->AddPoint(wirelen,rmsval);
+		qrgraphcnr->AddPoint(wirelen,rmsval);
 		((ic < 5632) ? rgraphecnr : rgraphwcnr)->AddPoint(wirelen,rmsval);
+		((ic < 5632) ? qrgraphecnr : qrgraphwcnr)->AddPoint(wirelen,qsubrmsval);
 		if (ic<1984)
 		  {
 		    rgrapheucnr->AddPoint(wirelen,rmsval);
+		    qrgrapheucnr->AddPoint(wirelen,qsubrmsval);
 		  }
 		else if (ic < 3968)
 		  {
 		    rgraphevcnr->AddPoint(wirelen,rmsval);
+		    qrgraphevcnr->AddPoint(wirelen,qsubrmsval);
 		  }
 		else if (ic < 5632)
 		  {
@@ -321,10 +355,12 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
 		else if (ic < 7616)
 		  {
 		    rgraphwucnr->AddPoint(wirelen,rmsval);
+		    qrgraphwucnr->AddPoint(wirelen,qsubrmsval);
 		  }
 		else if (ic < 9600)
 		  {
 		    rgraphwvcnr->AddPoint(wirelen,rmsval);
+		    qrgraphwvcnr->AddPoint(wirelen,qsubrmsval);
 		  }	      
 
 	      }
@@ -398,6 +434,11 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   vadcminusmed->Draw("hist");
   rcanvas->Print("vadcminusmed.png");
 
+  rgraphcnr->SetMinimum(0);
+  rgraphcnr->SetMaximum(4);
+  rgraphcnr->Draw("AP");
+  rcanvas->Print("rmsvswirelen_cnr.png");
+  
   rgraphecnr->SetMinimum(0);
   rgraphecnr->SetMaximum(4);
   rgraphecnr->Draw("AP");
@@ -427,6 +468,41 @@ void rmsvswirelen(std::string filename="tpcdecode_data_evb03_run11505_24_2024030
   rgraphwvcnr->SetMaximum(4);
   rgraphwvcnr->Draw("AP");
   rcanvas->Print("rmsvswirelenwestV_cnr.png");
+
+  qrgraphcnr->SetMinimum(0);
+  qrgraphcnr->SetMaximum(4);
+  qrgraphcnr->Draw("AP");
+  rcanvas->Print("qdiffrmsvswirelen_cnr.png");
+  
+  qrgraphecnr->SetMinimum(0);
+  qrgraphecnr->SetMaximum(4);
+  qrgraphecnr->Draw("AP");
+  rcanvas->Print("qdiffrmsvswireleneast_cnr.png");
+
+  qrgrapheucnr->SetMinimum(0);
+  qrgrapheucnr->SetMaximum(4);
+  qrgrapheucnr->Draw("AP");
+  rcanvas->Print("qdiffrmsvswireleneastU_cnr.png");
+
+  qrgraphevcnr->SetMinimum(0);
+  qrgraphevcnr->SetMaximum(4);
+  qrgraphevcnr->Draw("AP");
+  rcanvas->Print("qdiffrmsvswireleneastV_cnr.png");
+  
+  qrgraphwcnr->SetMinimum(0);
+  qrgraphwcnr->SetMaximum(4);
+  qrgraphwcnr->Draw("AP");
+  rcanvas->Print("qdiffrmsvswirelenwest_cnr.png");
+
+  qrgraphwucnr->SetMinimum(0);
+  qrgraphwucnr->SetMaximum(4);
+  qrgraphwucnr->Draw("AP");
+  rcanvas->Print("qdiffrmsvswirelenwestU_cnr.png");
+
+  qrgraphwvcnr->SetMinimum(0);
+  qrgraphwvcnr->SetMaximum(4);
+  qrgraphwvcnr->Draw("AP");
+  rcanvas->Print("qdiffrmsvswirelenwestV_cnr.png");
   
 
 }
