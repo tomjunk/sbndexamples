@@ -144,7 +144,8 @@ void evblip()
 	bool printed = false;
         for (size_t ichan=0;ichan<nrawdigits;++ichan)
           {
-            size_t ic = rawdigits[ichan].Channel(); 
+            size_t ic = rawdigits[ichan].Channel();
+	    if (ic < 1984 || ic > 3967) continue;
 	    float pedestal = rawdigits[ichan].GetPedestal();
             for (size_t itick=0; itick < nsamples; ++itick)
 	      {
