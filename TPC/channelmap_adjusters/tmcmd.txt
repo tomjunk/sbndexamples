@@ -1,0 +1,11 @@
+
+{
+TTree T("cmap","cmap");
+
+T.ReadFile("cmap.dat","wire/I:plane/C:apa/C:half/C:topside/C:fembpos/C:fembserial/C:femb/I:fembch/I:asic/I:wibcrate/I:wib/I:wibch/I:wibqfsp/C:qfspfiber/I:femcrate/I:fem/I:femch/I:larsoftch/I");
+
+TFile f("cmap.root","RECREATE");
+T.Write();
+f.Close();
+
+}
