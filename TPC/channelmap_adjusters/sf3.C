@@ -1,7 +1,7 @@
-// Swap FEMs 12 and 13 in FEM Crate 7
-// Swap everything after the WIB input  WIBQFSP, QFSPFiber, FEMCrate, FEM, FEMCh, but *not* offlchan
-// and leave everything else the same.  n.b. the relationship between offlchan and wireno should remain
-// the same.
+// rearrange three FEMBs in the East V side.  Invert the ordering of
+// all channels in each plane of each FEMB on the top.  Only offlchan
+// and wireno are affected by this -- changes which wires each channel
+// is connected to
 
 #include <iostream>
 #include <string>

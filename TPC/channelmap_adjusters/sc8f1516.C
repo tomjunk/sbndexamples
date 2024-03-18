@@ -1,7 +1,4 @@
-// Swap FEMs 12 and 13 in FEM Crate 7
-// Swap everything after the WIB input  WIBQFSP, QFSPFiber, FEMCrate, FEM, FEMCh, but *not* offlchan
-// and leave everything else the same.  n.b. the relationship between offlchan and wireno should remain
-// the same.
+// Swap FEMs 15 and 16 in FEM Crate 8
 
 #include <iostream>
 #include <string>
