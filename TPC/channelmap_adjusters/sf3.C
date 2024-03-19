@@ -94,9 +94,9 @@ int main(int argc, char **argv)
 	  cs.offlchan -= 256;
 	}
 
-      if (c.offlchan < 1984/2 ||
-	  ((c.offlchan >= (1984 + (3968-1984)/2)) && (c.offlchan < 5632)) ||
-	  ((c.offlchan >= (5632 + (7616-5632)/2)) && (c.offlchan < (7616 + (9600-7616)/2))) ||
+      if (c.offlchan < 832 ||
+	  ((c.offlchan >= 3136) && (c.offlchan < 5632)) ||
+	  ((c.offlchan >= 6784) && (c.offlchan < 8448)) ||
 	  c.offlchan >= 9600)
 	{
 	  if (c.plane.find("Y") != std::string::npos )
