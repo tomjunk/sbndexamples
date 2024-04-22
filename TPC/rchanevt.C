@@ -17,7 +17,8 @@
 using namespace art;
 using namespace std;
 
-// gallery script to print out run and event numbers for blips in East V
+// gallery script to make a 2D profile histogram of RMS vs channel and
+// event number
 
 
 void rchanevt()
