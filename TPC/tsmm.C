@@ -178,7 +178,6 @@ void tsmm()
     filenames.push_back("decode_data_evb01_run12804_9_20240424T093000-673c1596-84c8-49e7-b085-8e48aed3deca.root");
     filenames.push_back("decode_data_evb01_run12804_9_20240424T093005-d82b730b-0fc7-4429-b2cf-f077854e4337.root");
     filenames.push_back("decode_data_evb01_run12804_9_20240424T093009-bcb6040a-19ec-4c6b-9002-b0919ed8eca4.root");
-    filenames.push_back("decode_data_evb02_run12799_46_20240424T025534-e7ccec6b-536a-4364-9b96-c45b43983123.root");
     filenames.push_back("decode_data_evb02_run12804_10_20240424T093532-0f38b860-fbb3-48b7-9f1d-3ed731e39d9e.root");
     filenames.push_back("decode_data_evb02_run12804_10_20240424T093647-0427fb00-3c8b-463a-9c74-17323db19526.root");
     filenames.push_back("decode_data_evb02_run12804_10_20240424T093725-641c71bf-795f-4489-a05f-3597bc979a34.root");
