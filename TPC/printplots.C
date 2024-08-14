@@ -59,6 +59,7 @@ void mpa(TDirectory *current_sourcedir)
 	    {
 	      plotno = 1;
 	      c1->Print("combhistos.pdf(");
+	      c1->Clear("D");
 	    }
 	  c1->cd(plotno);
 	  if (h1->GetNbinsY()==1)
