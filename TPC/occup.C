@@ -39,7 +39,7 @@ void occup(std::string const& filename="/home/trj/saut/triggerdecoder/sbndc4/wor
   
   TString ht = inputtitle;
   ht += ";Channel;Occupancy [hits/event]";
-  TProfile *occupchan = (TProfile*) new TProfile("occupchan",ht,11264,-0.5,11263.5);
+  TProfile *occupchan = (TProfile*) new TProfile("occupchan",ht,11276,-0.5,11275.5);
   occupchan->SetDirectory(0);
   
   InputTag rawdigit_tag{ inputtag };
