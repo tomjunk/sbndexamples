@@ -14,7 +14,6 @@
 #include "TVirtualFFT.h"
 #include "lardataobj/RawData/RawDigit.h"
 
-
 // too lazy to encapsulate these global variables
 
 const int nchans=11276;
