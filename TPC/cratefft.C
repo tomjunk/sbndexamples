@@ -84,7 +84,7 @@ void cratefftfile(string filename,
 
 // main method of this script
 
-void cratefft(TString outputfilename="fftrangetimedep.root",
+void cratefft(TString outputfilename="fftbycrate.root",
 		  size_t tickmin=0,
 		  size_t tickmax=3426,   // we have an odd number of ticks, 3427 -- take the first 3426
                   double digifreq=2.0
